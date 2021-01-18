@@ -1,21 +1,37 @@
 version: '3.6'
 services:
+
   postgres:
-    image: postgres:12
-    restart: always
+    image: postgres:latest
+    restart: unless
     volumes:
     - db_data:/var/lib/postgresql/data
+    
+    ports:
+      - "5432:5432"
+
     environment:
-      POSTGRES_PASSWORD: postgrespassword
+      - POSTGRES_USER=babyshark
+      - POSTGRES_PASSWORD=babyshark
+      - POSTGRES_DB=kodo_senseei
+
+
+
+
   graphql-engine:
-    image: hasura/graphql-engine:v1.3.3
+
+    image: adamsokode/graphql-engine:v1.3.4
+
     ports:
     - "8080:8080"
+
     depends_on:
     - "postgres"
+
     restart: always
+
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@babyshark:5432/kodo_sen
       ## enable the console served by server
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       ## enable debugging mode. It is recommended to disable this in production
@@ -25,3 +41,9 @@ services:
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
 volumes:
   db_data:
+
+
+
+
+
+   
