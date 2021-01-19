@@ -1,26 +1,33 @@
 version: '3.6'
 services:
 
+  pgAdmin:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    ports: 
+    - "9999:9999"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=anyungucw@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=iamaccess123
+      - PGADMIN_CONFIG_LOGIN_BANNER="Authorised users only!"
+      - PGADMIN_CONFIG_CONSOLE_LOG_LEVEL=10
+      - PGADMIN_LISTEN_PORT=9999
+    container_name: app
+
   postgres:
-    image: postgres:latest
-    restart: unless
+    image: postgres
+    restart: always
     volumes:
     - db_data:/var/lib/postgresql/data
-    
-    ports:
-      - "5432:5432"
 
     environment:
       - POSTGRES_USER=babyshark
       - POSTGRES_PASSWORD=babyshark
-      - POSTGRES_DB=kodo_senseei
-
-
-
+      - POSTGRES_DB=kodo
 
   graphql-engine:
 
-    image: adamsokode/graphql-engine:v1.3.4
+    image: hasura/graphql-engine:latest
 
     ports:
     - "8080:8080"
@@ -31,7 +38,7 @@ services:
     restart: always
 
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@babyshark:5432/kodo_sen
+      HASURA_GRAPHQL_DATABASE_URL: postgres://babyshark:babyshark@postgres:5432/kodo
       ## enable the console served by server
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       ## enable debugging mode. It is recommended to disable this in production
